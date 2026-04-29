@@ -6,6 +6,7 @@
   "status": "listed",
   "featured": true,
   "defaultVersion": "0.1.0",
+  "defaultReviewStatus": "verified",
   "versions": [
     {
       "version": "0.1.0",

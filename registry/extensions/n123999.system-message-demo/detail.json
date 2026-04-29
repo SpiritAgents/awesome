@@ -6,6 +6,7 @@
   "status": "listed",
   "featured": true,
   "defaultVersion": "0.1.0",
+  "defaultReviewStatus": "verified",
   "readmePath": "extensions/n123999.system-message-demo/README.md",
   "versions": [
     {

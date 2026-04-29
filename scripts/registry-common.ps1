@@ -55,6 +55,10 @@ function Assert-RegistryEntry {
     throw "defaultVersion must be a non-empty string in $FileName."
   }
 
+  if ([string]::IsNullOrWhiteSpace([string]$Entry.defaultReviewStatus)) {
+    throw "defaultReviewStatus must be a non-empty string in $FileName."
+  }
+
   $allowedStatuses = @('listed', 'hidden', 'deprecated', 'blocked')
   if ($Entry.status -notin $allowedStatuses) {
     throw "Invalid status '$($Entry.status)' in $FileName. Allowed values: $($allowedStatuses -join ', ')."
@@ -72,6 +76,10 @@ function Assert-RegistryEntry {
   $seenVersions = @{}
   $allowedChannels = @('stable', 'preview', 'experimental')
   $allowedReviewStatuses = @('unverified', 'verified', 'revoked')
+
+  if ($Entry.defaultReviewStatus -notin $allowedReviewStatuses) {
+    throw "Invalid defaultReviewStatus '$($Entry.defaultReviewStatus)' in $FileName. Allowed values: $($allowedReviewStatuses -join ', ')."
+  }
 
   foreach ($versionItem in $versions) {
     foreach ($requiredKey in @('version', 'channel', 'reviewStatus')) {

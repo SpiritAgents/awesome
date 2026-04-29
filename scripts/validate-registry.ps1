@@ -63,18 +63,15 @@ foreach ($entry in $entries) {
 
   $catalogItem = $matchingItem[0]
 
-  foreach ($field in @('packageName', 'status', 'featured', 'defaultVersion')) {
+  foreach ($field in @('packageName', 'status', 'featured', 'defaultVersion', 'defaultReviewStatus')) {
     if ($catalogItem[$field] -cne $entry[$field]) {
       throw "registry/catalog.json is out of sync for extensionId '$($entry.extensionId)' field '$field'."
     }
   }
 
   $defaultEntryVersion = Get-EntryDefaultVersionItem -Entry $entry
-  foreach ($field in @('channel', 'reviewStatus')) {
-    $catalogField = if ($field -eq 'channel') { 'defaultChannel' } else { 'defaultReviewStatus' }
-    if ($catalogItem[$catalogField] -cne $defaultEntryVersion[$field]) {
-      throw "registry/catalog.json is out of sync for extensionId '$($entry.extensionId)' field '$catalogField'."
-    }
+  if ($catalogItem.defaultChannel -cne $defaultEntryVersion.channel) {
+    throw "registry/catalog.json is out of sync for extensionId '$($entry.extensionId)' field 'defaultChannel'."
   }
 
   $expectedDetailPath = Get-RegistryDetailRelativePath -ExtensionId $entry.extensionId
@@ -88,13 +85,13 @@ foreach ($entry in $entries) {
   }
 
   $detail = Get-Content -Raw -Path $detailFilePath | ConvertFrom-Json -AsHashtable
-  foreach ($requiredKey in @('schemaVersion', 'extensionId', 'packageName', 'status', 'featured', 'defaultVersion', 'readmePath', 'versions')) {
+  foreach ($requiredKey in @('schemaVersion', 'extensionId', 'packageName', 'status', 'featured', 'defaultVersion', 'defaultReviewStatus', 'readmePath', 'versions')) {
     if (-not $detail.ContainsKey($requiredKey)) {
       throw "registry/extensions/$($entry.extensionId)/detail.json is missing required key '$requiredKey'."
     }
   }
 
-  foreach ($field in @('extensionId', 'packageName', 'status', 'featured', 'defaultVersion')) {
+  foreach ($field in @('extensionId', 'packageName', 'status', 'featured', 'defaultVersion', 'defaultReviewStatus')) {
     if ($detail[$field] -cne $entry[$field]) {
       throw "registry/extensions/$($entry.extensionId)/detail.json is out of sync for field '$field'."
     }

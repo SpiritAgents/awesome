@@ -7,7 +7,7 @@
 ## Source Of Truth
 
 - Extension metadata lives in each published npm package's package.json under spiritExtension.
-- Registry entry files should only store marketplace governance data and explicit approved versions.
+- Registry entry files should only store marketplace governance data, explicit approved versions, and extension-level marketplace review state.
 - Do not duplicate displayName, description, supportedHosts, or requestedCapabilities in registry entries unless an explicit marketplace override is required.
 
 ## Documentation Boundaries
@@ -35,5 +35,5 @@
 - Regenerate registry/catalog.json and registry/extensions/<extension-id>/detail.json locally after editing any registry/extensions/<extension-id>/entry.json file or when published npm metadata changes.
 - Do not manually edit registry/catalog.json or registry/extensions/<extension-id>/detail.json.
 - Keep CI free of npm network requests; only local generation should hydrate the catalog.
-- Keep reviewStatus version-scoped and avoid marking versions as verified casually.
+- Keep defaultReviewStatus extension-scoped in entry/detail/catalog, and keep versions[].reviewStatus version-scoped.
 - Keep packageName and extensionId unique across all entries.

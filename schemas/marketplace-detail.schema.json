@@ -11,6 +11,7 @@
     "status",
     "featured",
     "defaultVersion",
+    "defaultReviewStatus",
     "readmePath",
     "versions"
   ],
@@ -36,6 +37,14 @@
     },
     "defaultVersion": {
       "type": "string"
+    },
+    "defaultReviewStatus": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "verified",
+        "revoked"
+      ]
     },
     "readmePath": {
       "type": "string"

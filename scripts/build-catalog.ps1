@@ -131,7 +131,7 @@ foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
     featured = [bool]$entry.featured
     defaultVersion = [string]$entry.defaultVersion
     defaultChannel = [string]$defaultEntryVersion.channel
-    defaultReviewStatus = [string]$defaultEntryVersion.reviewStatus
+    defaultReviewStatus = [string]$entry.defaultReviewStatus
     detailPath = $detailRelativePath
     displayName = [string]$defaultDetailVersion.displayName
     description = [string]$defaultDetailVersion.description
@@ -162,6 +162,7 @@ foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
     status = $entry.status
     featured = [bool]$entry.featured
     defaultVersion = [string]$entry.defaultVersion
+    defaultReviewStatus = [string]$entry.defaultReviewStatus
     readmePath = (Get-RegistryReadmeRelativePath -ExtensionId $entry.extensionId)
     versions = @($detailVersions.ToArray())
   }
