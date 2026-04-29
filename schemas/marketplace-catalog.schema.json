@@ -62,7 +62,7 @@
           "defaultReviewStatus": {
             "type": "string",
             "enum": [
-              "unreviewed",
+              "unverified",
               "verified",
               "revoked"
             ]

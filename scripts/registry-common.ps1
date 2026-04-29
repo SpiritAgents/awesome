@@ -71,7 +71,7 @@ function Assert-RegistryEntry {
 
   $seenVersions = @{}
   $allowedChannels = @('stable', 'preview', 'experimental')
-  $allowedReviewStatuses = @('unreviewed', 'verified', 'revoked')
+  $allowedReviewStatuses = @('unverified', 'verified', 'revoked')
 
   foreach ($versionItem in $versions) {
     foreach ($requiredKey in @('version', 'channel', 'reviewStatus')) {
