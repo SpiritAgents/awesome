@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "sample.system-message-demo",
+  "name": "System message demo",
+  "version": "0.1.0",
+  "description": "Minimal sample: contributes only a system message.",
+  "author": "N123999 (XianYu)",
+  "main": "dist/index.js",
+  "supportedHosts": ["cli", "desktop"],
+  "requestedCapabilities": ["system-prompt"]
+}
