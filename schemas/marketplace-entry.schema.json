@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/schemas/marketplace-entry.schema.json",
+  "$id": "https://raw.githubusercontent.com/N123999/awesome-SpiritAgent/refs/heads/main/schemas/marketplace-entry.schema.json",
   "title": "Spirit Agent Marketplace Entry",
   "type": "object",
   "additionalProperties": false,
