@@ -29,7 +29,7 @@ function Assert-RegistryEntry {
     throw "Unsupported schemaVersion in $FileName."
   }
 
-  foreach ($requiredKey in @('extensionId', 'packageName', 'channel', 'status', 'featured')) {
+  foreach ($requiredKey in @('extensionId', 'packageName', 'status', 'featured', 'versions')) {
     if (-not $Entry.ContainsKey($requiredKey)) {
       throw "Missing required key '$requiredKey' in $FileName."
     }
@@ -43,11 +43,6 @@ function Assert-RegistryEntry {
     throw "packageName must be a non-empty string in $FileName."
   }
 
-  $allowedChannels = @('stable', 'preview', 'experimental')
-  if ($Entry.channel -notin $allowedChannels) {
-    throw "Invalid channel '$($Entry.channel)' in $FileName. Allowed values: $($allowedChannels -join ', ')."
-  }
-
   $allowedStatuses = @('listed', 'hidden', 'deprecated', 'blocked')
   if ($Entry.status -notin $allowedStatuses) {
     throw "Invalid status '$($Entry.status)' in $FileName. Allowed values: $($allowedStatuses -join ', ')."
@@ -55,6 +50,41 @@ function Assert-RegistryEntry {
 
   if ($Entry.featured -isnot [bool]) {
     throw "featured must be a boolean in $FileName."
+  }
+
+  $versions = @($Entry.versions)
+  if ($versions.Count -eq 0) {
+    throw "versions must contain at least one item in $FileName."
+  }
+
+  $seenVersions = @{}
+  $allowedChannels = @('stable', 'preview', 'experimental')
+  $allowedReviewStatuses = @('unreviewed', 'verified', 'revoked')
+
+  foreach ($versionItem in $versions) {
+    foreach ($requiredKey in @('version', 'channel', 'reviewStatus')) {
+      if (-not $versionItem.ContainsKey($requiredKey)) {
+        throw "Missing required version key '$requiredKey' in $FileName."
+      }
+    }
+
+    if ([string]::IsNullOrWhiteSpace([string]$versionItem.version)) {
+      throw "version must be a non-empty string in $FileName."
+    }
+
+    if ($seenVersions.ContainsKey([string]$versionItem.version)) {
+      throw "Duplicate version '$($versionItem.version)' found in $FileName."
+    }
+
+    if ($versionItem.channel -notin $allowedChannels) {
+      throw "Invalid channel '$($versionItem.channel)' in $FileName. Allowed values: $($allowedChannels -join ', ')."
+    }
+
+    if ($versionItem.reviewStatus -notin $allowedReviewStatuses) {
+      throw "Invalid reviewStatus '$($versionItem.reviewStatus)' in $FileName. Allowed values: $($allowedReviewStatuses -join ', ')."
+    }
+
+    $seenVersions[[string]$versionItem.version] = $true
   }
 }
 
@@ -85,43 +115,6 @@ function Get-RegistryEntries {
   }
 
   return @($entries | Sort-Object extensionId)
-}
-
-function Resolve-ChannelDistTag {
-  param(
-    [string]$Channel
-  )
-
-  switch ($Channel) {
-    'stable' { return 'latest' }
-    'preview' { return 'next' }
-    'experimental' { return 'experimental' }
-    default { throw "Unsupported channel '$Channel'." }
-  }
-}
-
-function Get-PreferredDistTagValue {
-  param(
-    [hashtable]$DistTags,
-    [string]$Channel
-  )
-
-  $preferredTag = Resolve-ChannelDistTag -Channel $Channel
-  if ($DistTags.ContainsKey($preferredTag) -and -not [string]::IsNullOrWhiteSpace($DistTags[$preferredTag])) {
-    return [ordered]@{
-      distTag = $preferredTag
-      version = $DistTags[$preferredTag]
-    }
-  }
-
-  if ($DistTags.ContainsKey('latest') -and -not [string]::IsNullOrWhiteSpace($DistTags['latest'])) {
-    return [ordered]@{
-      distTag = 'latest'
-      version = $DistTags['latest']
-    }
-  }
-
-  throw "Unable to resolve a version for channel '$Channel'."
 }
 
 function Get-PackageRegistryDocument {

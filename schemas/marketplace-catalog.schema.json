@@ -24,15 +24,9 @@
         "required": [
           "extensionId",
           "packageName",
-          "channel",
           "status",
           "featured",
-          "distTag",
-          "version",
-          "displayName",
-          "description",
-          "supportedHosts",
-          "requestedCapabilities"
+          "versions"
         ],
         "properties": {
           "extensionId": {
@@ -41,68 +35,97 @@
           "packageName": {
             "type": "string"
           },
-          "channel": {
-            "type": "string"
-          },
           "status": {
             "type": "string"
           },
           "featured": {
             "type": "boolean"
           },
-          "distTag": {
-            "type": "string"
-          },
-          "version": {
-            "type": "string"
-          },
-          "displayName": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "author": {
-            "type": "string"
-          },
-          "homepageUrl": {
-            "type": "string"
-          },
-          "repositoryUrl": {
-            "type": "string"
-          },
-          "keywords": {
+          "versions": {
             "type": "array",
+            "minItems": 1,
             "items": {
-              "type": "string"
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "version",
+                "channel",
+                "reviewStatus",
+                "displayName",
+                "description",
+                "supportedHosts",
+                "requestedCapabilities"
+              ],
+              "properties": {
+                "version": {
+                  "type": "string"
+                },
+                "channel": {
+                  "type": "string",
+                  "enum": [
+                    "stable",
+                    "preview",
+                    "experimental"
+                  ]
+                },
+                "reviewStatus": {
+                  "type": "string",
+                  "enum": [
+                    "unreviewed",
+                    "verified",
+                    "revoked"
+                  ]
+                },
+                "displayName": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": "string"
+                },
+                "homepageUrl": {
+                  "type": "string"
+                },
+                "repositoryUrl": {
+                  "type": "string"
+                },
+                "keywords": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "supportedHosts": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "requestedCapabilities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "iconUrl": {
+                  "type": "string"
+                },
+                "publishedAt": {
+                  "type": "string"
+                },
+                "tarballUrl": {
+                  "type": "string"
+                },
+                "integrity": {
+                  "type": "string"
+                },
+                "shasum": {
+                  "type": "string"
+                }
+              }
             }
-          },
-          "supportedHosts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "requestedCapabilities": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "iconUrl": {
-            "type": "string"
-          },
-          "publishedAt": {
-            "type": "string"
-          },
-          "tarballUrl": {
-            "type": "string"
-          },
-          "integrity": {
-            "type": "string"
-          },
-          "shasum": {
-            "type": "string"
           }
         }
       }

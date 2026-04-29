@@ -3,7 +3,13 @@
   "schemaVersion": 1,
   "extensionId": "n123999.system-message-demo",
   "packageName": "@n123999/spirit-agent-extension-system-message-demo",
-  "channel": "stable",
   "status": "listed",
-  "featured": true
+  "featured": true,
+  "versions": [
+    {
+      "version": "0.1.0",
+      "channel": "stable",
+      "reviewStatus": "unreviewed"
+    }
+  ]
 }
