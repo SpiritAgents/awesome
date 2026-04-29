@@ -7,7 +7,10 @@ on:
       - .github/workflows/validate-registry.yml
       - registry/**
       - schemas/**
-      - scripts/build-index.ps1
+      - scripts/build-catalog.ps1
+      - scripts/build-registry.ps1
+      - scripts/validate-registry.ps1
+      - scripts/registry-common.ps1
   push:
     branches:
       - main
@@ -15,7 +18,10 @@ on:
       - .github/workflows/validate-registry.yml
       - registry/**
       - schemas/**
-      - scripts/build-index.ps1
+      - scripts/build-catalog.ps1
+      - scripts/build-registry.ps1
+      - scripts/validate-registry.ps1
+      - scripts/registry-common.ps1
 
 jobs:
   validate:
@@ -25,15 +31,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Rebuild aggregate registry index
+      - name: Validate registry entries and catalog consistency
         shell: pwsh
-        run: ./scripts/build-index.ps1
-
-      - name: Verify generated files are committed
-        shell: pwsh
-        run: |
-          $changes = git status --short --untracked-files=no
-          if ($changes) {
-            Write-Host $changes
-            throw 'Generated files are out of date. Run ./scripts/build-index.ps1 and commit the updated output.'
-          }
+        run: ./scripts/validate-registry.ps1

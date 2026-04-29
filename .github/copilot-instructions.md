@@ -19,13 +19,17 @@
 ## Registry Layout
 
 - registry/extensions/*.json stores one marketplace entry per extension.
-- registry/index.json is the generated aggregate index consumed by clients.
+- registry/catalog.json is the hydrated generated catalog consumed by marketplace list UIs.
 - schemas/*.schema.json defines the registry file shapes.
-- scripts/build-index.ps1 regenerates registry/index.json from registry/extensions/*.json.
+- scripts/validate-registry.ps1 validates registry/extensions/*.json and checks shared fields against registry/catalog.json without npm network access.
+- scripts/build-catalog.ps1 hydrates registry/catalog.json from npm package metadata.
+- scripts/build-registry.ps1 validates registry state and rebuilds registry/catalog.json locally.
 
 ## Editing Guidance
 
 - Prefer structural changes that preserve the repository root for future docs, schemas, and tooling.
 - Update schemas and the build script together when the entry shape changes.
-- Regenerate registry/index.json after editing any registry/extensions/*.json file.
+- Regenerate registry/catalog.json locally after editing any registry/extensions/*.json file or when published npm metadata changes.
+- Do not manually edit registry/catalog.json.
+- Keep CI free of npm network requests; only local generation should hydrate the catalog.
 - Keep packageName and extensionId unique across all entries.

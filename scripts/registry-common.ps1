@@ -1,0 +1,222 @@
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+
+function Get-RegistryRoot {
+  return (Resolve-Path (Join-Path $PSScriptRoot '..'))
+}
+
+function Get-RegistryEntryFiles {
+  param(
+    [string]$RepoRoot
+  )
+
+  $entriesDir = Join-Path $RepoRoot 'registry\extensions'
+  $entryFiles = @(Get-ChildItem -Path $entriesDir -Filter '*.json' | Sort-Object Name)
+  if ($entryFiles.Count -eq 0) {
+    throw 'No registry entry files found under registry/extensions/.'
+  }
+
+  return $entryFiles
+}
+
+function Assert-RegistryEntry {
+  param(
+    [hashtable]$Entry,
+    [string]$FileName
+  )
+
+  if ($Entry.schemaVersion -ne 1) {
+    throw "Unsupported schemaVersion in $FileName."
+  }
+
+  foreach ($requiredKey in @('extensionId', 'packageName', 'channel', 'status', 'featured')) {
+    if (-not $Entry.ContainsKey($requiredKey)) {
+      throw "Missing required key '$requiredKey' in $FileName."
+    }
+  }
+
+  if ([string]::IsNullOrWhiteSpace($Entry.extensionId)) {
+    throw "extensionId must be a non-empty string in $FileName."
+  }
+
+  if ([string]::IsNullOrWhiteSpace($Entry.packageName)) {
+    throw "packageName must be a non-empty string in $FileName."
+  }
+
+  $allowedChannels = @('stable', 'preview', 'experimental')
+  if ($Entry.channel -notin $allowedChannels) {
+    throw "Invalid channel '$($Entry.channel)' in $FileName. Allowed values: $($allowedChannels -join ', ')."
+  }
+
+  $allowedStatuses = @('listed', 'hidden', 'deprecated', 'blocked')
+  if ($Entry.status -notin $allowedStatuses) {
+    throw "Invalid status '$($Entry.status)' in $FileName. Allowed values: $($allowedStatuses -join ', ')."
+  }
+
+  if ($Entry.featured -isnot [bool]) {
+    throw "featured must be a boolean in $FileName."
+  }
+}
+
+function Get-RegistryEntries {
+  param(
+    [string]$RepoRoot
+  )
+
+  $seenExtensionIds = @{}
+  $seenPackageNames = @{}
+  $entries = New-Object System.Collections.Generic.List[hashtable]
+
+  foreach ($entryFile in (Get-RegistryEntryFiles -RepoRoot $RepoRoot)) {
+    $entry = Get-Content -Raw -Path $entryFile.FullName | ConvertFrom-Json -AsHashtable
+    Assert-RegistryEntry -Entry $entry -FileName $entryFile.Name
+
+    if ($seenExtensionIds.ContainsKey($entry.extensionId)) {
+      throw "Duplicate extensionId '$($entry.extensionId)' found in $($entryFile.Name) and $($seenExtensionIds[$entry.extensionId])."
+    }
+
+    if ($seenPackageNames.ContainsKey($entry.packageName)) {
+      throw "Duplicate packageName '$($entry.packageName)' found in $($entryFile.Name) and $($seenPackageNames[$entry.packageName])."
+    }
+
+    $seenExtensionIds[$entry.extensionId] = $entryFile.Name
+    $seenPackageNames[$entry.packageName] = $entryFile.Name
+    $entries.Add($entry)
+  }
+
+  return @($entries | Sort-Object extensionId)
+}
+
+function Resolve-ChannelDistTag {
+  param(
+    [string]$Channel
+  )
+
+  switch ($Channel) {
+    'stable' { return 'latest' }
+    'preview' { return 'next' }
+    'experimental' { return 'experimental' }
+    default { throw "Unsupported channel '$Channel'." }
+  }
+}
+
+function Get-PreferredDistTagValue {
+  param(
+    [hashtable]$DistTags,
+    [string]$Channel
+  )
+
+  $preferredTag = Resolve-ChannelDistTag -Channel $Channel
+  if ($DistTags.ContainsKey($preferredTag) -and -not [string]::IsNullOrWhiteSpace($DistTags[$preferredTag])) {
+    return [ordered]@{
+      distTag = $preferredTag
+      version = $DistTags[$preferredTag]
+    }
+  }
+
+  if ($DistTags.ContainsKey('latest') -and -not [string]::IsNullOrWhiteSpace($DistTags['latest'])) {
+    return [ordered]@{
+      distTag = 'latest'
+      version = $DistTags['latest']
+    }
+  }
+
+  throw "Unable to resolve a version for channel '$Channel'."
+}
+
+function Get-PackageRegistryDocument {
+  param(
+    [string]$PackageName
+  )
+
+  $escapedPackageName = [Uri]::EscapeDataString($PackageName)
+  $uri = "https://registry.npmjs.org/$escapedPackageName"
+  return Invoke-RestMethod -Uri $uri -Method Get
+}
+
+function Get-ObjectPropertyValue {
+  param(
+    $Object,
+    [string]$PropertyName
+  )
+
+  if ($null -eq $Object) {
+    return $null
+  }
+
+  if ($Object -is [hashtable]) {
+    if ($Object.ContainsKey($PropertyName)) {
+      return $Object[$PropertyName]
+    }
+
+    return $null
+  }
+
+  $property = $Object.PSObject.Properties[$PropertyName]
+  if ($null -eq $property) {
+    return $null
+  }
+
+  return $property.Value
+}
+
+function ConvertTo-AuthorString {
+  param(
+    $Author
+  )
+
+  if ($null -eq $Author) {
+    return $null
+  }
+
+  if ($Author -is [string]) {
+    return $Author
+  }
+
+  if ($Author.name) {
+    return [string]$Author.name
+  }
+
+  return $null
+}
+
+function Get-RepositoryUrl {
+  param(
+    $Repository
+  )
+
+  $url = $null
+  if ($null -eq $Repository) {
+    return $null
+  }
+
+  if ($Repository -is [string]) {
+    $url = $Repository
+  } elseif ($Repository.url) {
+    $url = [string]$Repository.url
+  }
+
+  if ([string]::IsNullOrWhiteSpace($url)) {
+    return $null
+  }
+
+  $url = $url -replace '^git\+', ''
+  $url = $url -replace '^git://github\.com/', 'https://github.com/'
+  $url = $url -replace '\.git$', ''
+  return $url
+}
+
+function New-IconUrl {
+  param(
+    [string]$PackageName,
+    [string]$Version,
+    [string]$IconPath
+  )
+
+  if ([string]::IsNullOrWhiteSpace($IconPath)) {
+    return $null
+  }
+
+  $normalizedPath = $IconPath.TrimStart('./').Replace('\', '/')
+  return "https://cdn.jsdelivr.net/npm/$PackageName@$Version/$normalizedPath"
+}

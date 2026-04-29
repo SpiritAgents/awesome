@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/N123999/awesome-SpiritAgent/refs/heads/main/schemas/marketplace-catalog.schema.json",
+  "title": "Spirit Agent Marketplace Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "items"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "extensionId",
+          "packageName",
+          "channel",
+          "status",
+          "featured",
+          "distTag",
+          "version",
+          "displayName",
+          "description",
+          "supportedHosts",
+          "requestedCapabilities"
+        ],
+        "properties": {
+          "extensionId": {
+            "type": "string"
+          },
+          "packageName": {
+            "type": "string"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "featured": {
+            "type": "boolean"
+          },
+          "distTag": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "homepageUrl": {
+            "type": "string"
+          },
+          "repositoryUrl": {
+            "type": "string"
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supportedHosts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requestedCapabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "iconUrl": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "type": "string"
+          },
+          "tarballUrl": {
+            "type": "string"
+          },
+          "integrity": {
+            "type": "string"
+          },
+          "shasum": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
