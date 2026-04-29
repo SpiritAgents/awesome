@@ -11,6 +11,11 @@ $items = New-Object System.Collections.Generic.List[object]
 Get-ChildItem -Path $extensionsDir -Recurse -Filter 'detail.json' -File | Remove-Item -Force
 
 foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
+  $readmePath = Get-RegistryReadmePath -RepoRoot $repoRoot -ExtensionId $entry.extensionId
+  if (-not (Test-Path -Path $readmePath)) {
+    throw "Missing README.md for extensionId '$($entry.extensionId)' at '$readmePath'."
+  }
+
   $registryDocument = Get-PackageRegistryDocument -PackageName $entry.packageName
   $versionsObject = Get-ObjectPropertyValue -Object $registryDocument -PropertyName 'versions'
   $timeObject = Get-ObjectPropertyValue -Object $registryDocument -PropertyName 'time'
@@ -157,6 +162,7 @@ foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
     status = $entry.status
     featured = [bool]$entry.featured
     defaultVersion = [string]$entry.defaultVersion
+    readmePath = (Get-RegistryReadmeRelativePath -ExtensionId $entry.extensionId)
     versions = @($detailVersions.ToArray())
   }
 

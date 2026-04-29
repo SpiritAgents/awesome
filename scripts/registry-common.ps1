@@ -273,6 +273,23 @@ function Get-RegistryDetailPath {
   return (Join-Path $RepoRoot (Join-Path 'registry\extensions' (Join-Path $ExtensionId 'detail.json')))
 }
 
+function Get-RegistryReadmeRelativePath {
+  param(
+    [string]$ExtensionId
+  )
+
+  return "extensions/$ExtensionId/README.md"
+}
+
+function Get-RegistryReadmePath {
+  param(
+    [string]$RepoRoot,
+    [string]$ExtensionId
+  )
+
+  return (Join-Path $RepoRoot (Join-Path 'registry\extensions' (Join-Path $ExtensionId 'README.md')))
+}
+
 function Get-EntryDefaultVersionItem {
   param(
     [hashtable]$Entry

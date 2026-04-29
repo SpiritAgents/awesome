@@ -11,6 +11,7 @@
     "status",
     "featured",
     "defaultVersion",
+    "readmePath",
     "versions"
   ],
   "properties": {
@@ -34,6 +35,9 @@
       "type": "boolean"
     },
     "defaultVersion": {
+      "type": "string"
+    },
+    "readmePath": {
       "type": "string"
     },
     "versions": {

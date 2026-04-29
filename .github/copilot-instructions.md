@@ -19,6 +19,7 @@
 ## Registry Layout
 
 - registry/extensions/<extension-id>/entry.json stores one marketplace entry per extension.
+- registry/extensions/<extension-id>/README.md stores the marketplace-facing README for that extension.
 - registry/catalog.json is the lightweight generated catalog consumed by marketplace list UIs.
 - registry/extensions/<extension-id>/detail.json stores the hydrated detail artifact for that extension.
 - schemas/*.schema.json defines the registry file shapes.
@@ -30,6 +31,7 @@
 
 - Prefer structural changes that preserve the repository root for future docs, schemas, and tooling.
 - Update schemas and the build script together when the entry shape changes.
+- Keep extension README content in registry/extensions/<extension-id>/README.md and reference it from generated detail artifacts instead of embedding full markdown into catalog.json.
 - Regenerate registry/catalog.json and registry/extensions/<extension-id>/detail.json locally after editing any registry/extensions/<extension-id>/entry.json file or when published npm metadata changes.
 - Do not manually edit registry/catalog.json or registry/extensions/<extension-id>/detail.json.
 - Keep CI free of npm network requests; only local generation should hydrate the catalog.

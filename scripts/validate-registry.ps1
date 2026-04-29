@@ -47,6 +47,11 @@ foreach ($catalogItem in $catalogItems) {
 }
 
 foreach ($entry in $entries) {
+  $readmeFilePath = Get-RegistryReadmePath -RepoRoot $repoRoot -ExtensionId $entry.extensionId
+  if (-not (Test-Path -Path $readmeFilePath)) {
+    throw "registry/extensions/$($entry.extensionId)/README.md is missing."
+  }
+
   $matchingItem = @($catalogItems | Where-Object { $_.extensionId -eq $entry.extensionId })
   if ($matchingItem.Count -eq 0) {
     throw "registry/catalog.json is missing extensionId '$($entry.extensionId)'."
@@ -83,7 +88,7 @@ foreach ($entry in $entries) {
   }
 
   $detail = Get-Content -Raw -Path $detailFilePath | ConvertFrom-Json -AsHashtable
-  foreach ($requiredKey in @('schemaVersion', 'extensionId', 'packageName', 'status', 'featured', 'defaultVersion', 'versions')) {
+  foreach ($requiredKey in @('schemaVersion', 'extensionId', 'packageName', 'status', 'featured', 'defaultVersion', 'readmePath', 'versions')) {
     if (-not $detail.ContainsKey($requiredKey)) {
       throw "registry/extensions/$($entry.extensionId)/detail.json is missing required key '$requiredKey'."
     }
@@ -93,6 +98,11 @@ foreach ($entry in $entries) {
     if ($detail[$field] -cne $entry[$field]) {
       throw "registry/extensions/$($entry.extensionId)/detail.json is out of sync for field '$field'."
     }
+  }
+
+  $expectedReadmePath = Get-RegistryReadmeRelativePath -ExtensionId $entry.extensionId
+  if ($detail.readmePath -cne $expectedReadmePath) {
+    throw "registry/extensions/$($entry.extensionId)/detail.json has an unexpected readmePath."
   }
 
   $entryVersions = @($entry.versions)
