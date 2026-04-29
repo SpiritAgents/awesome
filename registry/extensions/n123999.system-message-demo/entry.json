@@ -10,7 +10,7 @@
     {
       "version": "0.1.0",
       "channel": "stable",
-      "reviewStatus": "unverified",
+      "reviewStatus": "verified",
       "changelog": {
         "summary": "Initial public release.",
         "body": "- Initial public release.\n- Adds a minimal system-message demo extension."
