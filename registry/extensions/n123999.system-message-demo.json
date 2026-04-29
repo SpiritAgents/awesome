@@ -5,11 +5,16 @@
   "packageName": "@n123999/spirit-agent-extension-system-message-demo",
   "status": "listed",
   "featured": true,
+  "defaultVersion": "0.1.0",
   "versions": [
     {
       "version": "0.1.0",
       "channel": "stable",
-      "reviewStatus": "unreviewed"
+      "reviewStatus": "unreviewed",
+      "changelog": {
+        "summary": "Initial public release.",
+        "body": "- Initial public release.\n- Adds a minimal system-message demo extension."
+      }
     }
   ]
 }

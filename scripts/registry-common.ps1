@@ -29,7 +29,7 @@ function Assert-RegistryEntry {
     throw "Unsupported schemaVersion in $FileName."
   }
 
-  foreach ($requiredKey in @('extensionId', 'packageName', 'status', 'featured', 'versions')) {
+  foreach ($requiredKey in @('extensionId', 'packageName', 'status', 'featured', 'defaultVersion', 'versions')) {
     if (-not $Entry.ContainsKey($requiredKey)) {
       throw "Missing required key '$requiredKey' in $FileName."
     }
@@ -41,6 +41,10 @@ function Assert-RegistryEntry {
 
   if ([string]::IsNullOrWhiteSpace($Entry.packageName)) {
     throw "packageName must be a non-empty string in $FileName."
+  }
+
+  if ([string]::IsNullOrWhiteSpace([string]$Entry.defaultVersion)) {
+    throw "defaultVersion must be a non-empty string in $FileName."
   }
 
   $allowedStatuses = @('listed', 'hidden', 'deprecated', 'blocked')
@@ -84,7 +88,28 @@ function Assert-RegistryEntry {
       throw "Invalid reviewStatus '$($versionItem.reviewStatus)' in $FileName. Allowed values: $($allowedReviewStatuses -join ', ')."
     }
 
+    $changelog = Get-ObjectPropertyValue -Object $versionItem -PropertyName 'changelog'
+    if ($null -ne $changelog) {
+      foreach ($requiredKey in @('summary', 'body')) {
+        if (-not $changelog.ContainsKey($requiredKey)) {
+          throw "Missing required changelog key '$requiredKey' in $FileName."
+        }
+      }
+
+      if ([string]::IsNullOrWhiteSpace([string]$changelog.summary)) {
+        throw "changelog.summary must be a non-empty string in $FileName."
+      }
+
+      if ([string]::IsNullOrWhiteSpace([string]$changelog.body)) {
+        throw "changelog.body must be a non-empty string in $FileName."
+      }
+    }
+
     $seenVersions[[string]$versionItem.version] = $true
+  }
+
+  if (-not $seenVersions.ContainsKey([string]$Entry.defaultVersion)) {
+    throw "defaultVersion '$($Entry.defaultVersion)' was not found in the versions list for $FileName."
   }
 }
 
@@ -137,8 +162,8 @@ function Get-ObjectPropertyValue {
     return $null
   }
 
-  if ($Object -is [hashtable]) {
-    if ($Object.ContainsKey($PropertyName)) {
+  if ($Object -is [System.Collections.IDictionary]) {
+    if ($Object.Contains($PropertyName)) {
       return $Object[$PropertyName]
     }
 
@@ -212,4 +237,35 @@ function New-IconUrl {
 
   $normalizedPath = $IconPath.TrimStart('./').Replace('\', '/')
   return "https://cdn.jsdelivr.net/npm/$PackageName@$Version/$normalizedPath"
+}
+
+function Get-RegistryDetailRelativePath {
+  param(
+    [string]$ExtensionId
+  )
+
+  return "details/$ExtensionId.json"
+}
+
+function Get-RegistryDetailPath {
+  param(
+    [string]$RepoRoot,
+    [string]$ExtensionId
+  )
+
+  return (Join-Path $RepoRoot (Join-Path 'registry\details' ($ExtensionId + '.json')))
+}
+
+function Get-EntryDefaultVersionItem {
+  param(
+    [hashtable]$Entry
+  )
+
+  foreach ($versionItem in @($Entry.versions)) {
+    if ([string]$versionItem.version -ceq [string]$Entry.defaultVersion) {
+      return $versionItem
+    }
+  }
+
+  throw "defaultVersion '$($Entry.defaultVersion)' was not found for extensionId '$($Entry.extensionId)'."
 }

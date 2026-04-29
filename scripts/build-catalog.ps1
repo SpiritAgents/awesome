@@ -5,13 +5,17 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = Get-RegistryRoot
 $catalogPath = Join-Path $repoRoot 'registry\catalog.json'
+$detailsDir = Join-Path $repoRoot 'registry\details'
 $items = New-Object System.Collections.Generic.List[object]
+
+New-Item -ItemType Directory -Path $detailsDir -Force | Out-Null
+Get-ChildItem -Path $detailsDir -Filter '*.json' -File | Remove-Item -Force
 
 foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
   $registryDocument = Get-PackageRegistryDocument -PackageName $entry.packageName
   $versionsObject = Get-ObjectPropertyValue -Object $registryDocument -PropertyName 'versions'
   $timeObject = Get-ObjectPropertyValue -Object $registryDocument -PropertyName 'time'
-  $catalogVersions = New-Object System.Collections.Generic.List[object]
+  $detailVersions = New-Object System.Collections.Generic.List[object]
 
   foreach ($entryVersion in @($entry.versions)) {
     $version = [string]$entryVersion.version
@@ -62,7 +66,7 @@ foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
     $authorValue = Get-ObjectPropertyValue -Object $manifest -PropertyName 'author'
     $repositoryValue = Get-ObjectPropertyValue -Object $manifest -PropertyName 'repository'
 
-    $catalogVersion = [ordered]@{
+    $detailVersion = [ordered]@{
       version = $version
       channel = [string]$entryVersion.channel
       reviewStatus = [string]$entryVersion.reviewStatus
@@ -81,26 +85,84 @@ foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
       shasum = if ($null -ne $dist -and (Get-ObjectPropertyValue -Object $dist -PropertyName 'shasum')) { [string](Get-ObjectPropertyValue -Object $dist -PropertyName 'shasum') } else { $null }
     }
 
-    foreach ($optionalField in @('author', 'homepageUrl', 'repositoryUrl', 'iconUrl', 'publishedAt', 'tarballUrl', 'integrity', 'shasum')) {
-      if ($null -eq $catalogVersion[$optionalField] -or [string]::IsNullOrWhiteSpace([string]$catalogVersion[$optionalField])) {
-        $catalogVersion.Remove($optionalField)
+    $changelog = Get-ObjectPropertyValue -Object $entryVersion -PropertyName 'changelog'
+    if ($null -ne $changelog) {
+      $detailVersion.changelog = [ordered]@{
+        summary = [string]$changelog.summary
+        body = [string]$changelog.body
       }
     }
 
-    if ($catalogVersion.keywords.Count -eq 0) {
-      $catalogVersion.Remove('keywords')
+    foreach ($optionalField in @('author', 'homepageUrl', 'repositoryUrl', 'iconUrl', 'publishedAt', 'tarballUrl', 'integrity', 'shasum')) {
+      if ($null -eq $detailVersion[$optionalField] -or [string]::IsNullOrWhiteSpace([string]$detailVersion[$optionalField])) {
+        $detailVersion.Remove($optionalField)
+      }
     }
 
-    $catalogVersions.Add($catalogVersion)
+    if ($detailVersion.keywords.Count -eq 0) {
+      $detailVersion.Remove('keywords')
+    }
+
+    $detailVersions.Add($detailVersion)
   }
 
+  $defaultEntryVersion = Get-EntryDefaultVersionItem -Entry $entry
+  $defaultDetailVersion = $null
+  foreach ($detailVersion in @($detailVersions.ToArray())) {
+    if ([string]$detailVersion.version -ceq [string]$entry.defaultVersion) {
+      $defaultDetailVersion = $detailVersion
+      break
+    }
+  }
+
+  if ($null -eq $defaultDetailVersion) {
+    throw "defaultVersion '$($entry.defaultVersion)' was not found in generated detail versions for extensionId '$($entry.extensionId)'."
+  }
+
+  $detailRelativePath = Get-RegistryDetailRelativePath -ExtensionId $entry.extensionId
   $catalogItem = [ordered]@{
     extensionId = $entry.extensionId
     packageName = $entry.packageName
     status = $entry.status
     featured = [bool]$entry.featured
-    versions = @($catalogVersions.ToArray())
+    defaultVersion = [string]$entry.defaultVersion
+    defaultChannel = [string]$defaultEntryVersion.channel
+    defaultReviewStatus = [string]$defaultEntryVersion.reviewStatus
+    detailPath = $detailRelativePath
+    displayName = [string]$defaultDetailVersion.displayName
+    description = [string]$defaultDetailVersion.description
+    author = Get-ObjectPropertyValue -Object $defaultDetailVersion -PropertyName 'author'
+    homepageUrl = Get-ObjectPropertyValue -Object $defaultDetailVersion -PropertyName 'homepageUrl'
+    repositoryUrl = Get-ObjectPropertyValue -Object $defaultDetailVersion -PropertyName 'repositoryUrl'
+    keywords = Get-ObjectPropertyValue -Object $defaultDetailVersion -PropertyName 'keywords'
+    supportedHosts = @($defaultDetailVersion.supportedHosts)
+    requestedCapabilities = @($defaultDetailVersion.requestedCapabilities)
+    iconUrl = Get-ObjectPropertyValue -Object $defaultDetailVersion -PropertyName 'iconUrl'
   }
+
+  foreach ($optionalField in @('author', 'homepageUrl', 'repositoryUrl', 'iconUrl')) {
+    if ($null -eq $catalogItem[$optionalField] -or [string]::IsNullOrWhiteSpace([string]$catalogItem[$optionalField])) {
+      $catalogItem.Remove($optionalField)
+    }
+  }
+
+  if ($null -eq $catalogItem.keywords -or $catalogItem.keywords.Count -eq 0) {
+    $catalogItem.Remove('keywords')
+  }
+
+  $detailItem = [ordered]@{
+    '$schema' = '../../schemas/marketplace-detail.schema.json'
+    schemaVersion = 1
+    extensionId = $entry.extensionId
+    packageName = $entry.packageName
+    status = $entry.status
+    featured = [bool]$entry.featured
+    defaultVersion = [string]$entry.defaultVersion
+    versions = @($detailVersions.ToArray())
+  }
+
+  $detailJson = $detailItem | ConvertTo-Json -Depth 8
+  Set-Content -Path (Get-RegistryDetailPath -RepoRoot $repoRoot -ExtensionId $entry.extensionId) -Value ($detailJson + [Environment]::NewLine)
 
   $items.Add($catalogItem)
 }

@@ -1,12 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/N123999/awesome-SpiritAgent/refs/heads/main/schemas/marketplace-catalog.schema.json",
-  "title": "Spirit Agent Marketplace Catalog",
+  "$id": "https://raw.githubusercontent.com/N123999/awesome-SpiritAgent/refs/heads/main/schemas/marketplace-detail.schema.json",
+  "title": "Spirit Agent Marketplace Detail",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "schemaVersion",
-    "items"
+    "extensionId",
+    "packageName",
+    "status",
+    "featured",
+    "defaultVersion",
+    "versions"
   ],
   "properties": {
     "$schema": {
@@ -16,42 +21,41 @@
       "type": "integer",
       "const": 1
     },
-    "items": {
+    "extensionId": {
+      "type": "string"
+    },
+    "packageName": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "featured": {
+      "type": "boolean"
+    },
+    "defaultVersion": {
+      "type": "string"
+    },
+    "versions": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": [
-          "extensionId",
-          "packageName",
-          "status",
-          "featured",
-          "defaultVersion",
-          "defaultChannel",
-          "defaultReviewStatus",
-          "detailPath",
+          "version",
+          "channel",
+          "reviewStatus",
           "displayName",
           "description",
           "supportedHosts",
           "requestedCapabilities"
         ],
         "properties": {
-          "extensionId": {
+          "version": {
             "type": "string"
           },
-          "packageName": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "featured": {
-            "type": "boolean"
-          },
-          "defaultVersion": {
-            "type": "string"
-          },
-          "defaultChannel": {
+          "channel": {
             "type": "string",
             "enum": [
               "stable",
@@ -59,16 +63,13 @@
               "experimental"
             ]
           },
-          "defaultReviewStatus": {
+          "reviewStatus": {
             "type": "string",
             "enum": [
               "unreviewed",
               "verified",
               "revoked"
             ]
-          },
-          "detailPath": {
-            "type": "string"
           },
           "displayName": {
             "type": "string"
@@ -105,6 +106,34 @@
           },
           "iconUrl": {
             "type": "string"
+          },
+          "publishedAt": {
+            "type": "string"
+          },
+          "tarballUrl": {
+            "type": "string"
+          },
+          "integrity": {
+            "type": "string"
+          },
+          "shasum": {
+            "type": "string"
+          },
+          "changelog": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "summary",
+              "body"
+            ],
+            "properties": {
+              "summary": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              }
+            }
           }
         }
       }

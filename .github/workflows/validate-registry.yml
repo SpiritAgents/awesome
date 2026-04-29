@@ -31,6 +31,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate registry entries and catalog consistency
+      - name: Validate registry entries, catalog, and detail consistency
         shell: pwsh
         run: ./scripts/validate-registry.ps1
