@@ -1,2 +1,2 @@
 # awesome-SpiritAgent
-Extensions marketplact.
+Extensions marketplace.
