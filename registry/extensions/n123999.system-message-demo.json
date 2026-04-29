@@ -1,0 +1,9 @@
+{
+  "$schema": "../../schemas/marketplace-entry.schema.json",
+  "schemaVersion": 1,
+  "extensionId": "n123999.system-message-demo",
+  "packageName": "@n123999/spirit-agent-extension-system-message-demo",
+  "channel": "stable",
+  "status": "listed",
+  "featured": true
+}
