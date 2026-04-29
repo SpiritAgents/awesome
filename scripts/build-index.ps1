@@ -82,7 +82,6 @@ $sortedItems = $items | Sort-Object extensionId
 $index = [ordered]@{
   '$schema' = '../schemas/marketplace-index.schema.json'
   schemaVersion = 1
-  generatedAt = (Get-Date).ToUniversalTime().ToString('o')
   items = @($sortedItems)
 }
 
