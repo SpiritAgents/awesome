@@ -18,20 +18,20 @@
 
 ## Registry Layout
 
-- registry/extensions/*.json stores one marketplace entry per extension.
+- registry/extensions/<extension-id>/entry.json stores one marketplace entry per extension.
 - registry/catalog.json is the lightweight generated catalog consumed by marketplace list UIs.
-- registry/details/*.json stores one hydrated detail artifact per extension.
+- registry/extensions/<extension-id>/detail.json stores the hydrated detail artifact for that extension.
 - schemas/*.schema.json defines the registry file shapes.
-- scripts/validate-registry.ps1 validates registry/extensions/*.json and checks shared fields against registry/catalog.json and registry/details/*.json without npm network access.
-- scripts/build-catalog.ps1 hydrates registry/catalog.json and registry/details/*.json from the explicit versions listed in registry/extensions/*.json.
+- scripts/validate-registry.ps1 validates registry/extensions/<extension-id>/entry.json and checks shared fields against registry/catalog.json and registry/extensions/<extension-id>/detail.json without npm network access.
+- scripts/build-catalog.ps1 hydrates registry/catalog.json and registry/extensions/<extension-id>/detail.json from the explicit versions listed in registry/extensions/<extension-id>/entry.json.
 - scripts/build-registry.ps1 validates registry state and rebuilds generated registry artifacts locally.
 
 ## Editing Guidance
 
 - Prefer structural changes that preserve the repository root for future docs, schemas, and tooling.
 - Update schemas and the build script together when the entry shape changes.
-- Regenerate registry/catalog.json and registry/details/*.json locally after editing any registry/extensions/*.json file or when published npm metadata changes.
-- Do not manually edit registry/catalog.json or registry/details/*.json.
+- Regenerate registry/catalog.json and registry/extensions/<extension-id>/detail.json locally after editing any registry/extensions/<extension-id>/entry.json file or when published npm metadata changes.
+- Do not manually edit registry/catalog.json or registry/extensions/<extension-id>/detail.json.
 - Keep CI free of npm network requests; only local generation should hydrate the catalog.
 - Keep reviewStatus version-scoped and avoid marking versions as verified casually.
 - Keep packageName and extensionId unique across all entries.

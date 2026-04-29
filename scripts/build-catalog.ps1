@@ -5,11 +5,10 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = Get-RegistryRoot
 $catalogPath = Join-Path $repoRoot 'registry\catalog.json'
-$detailsDir = Join-Path $repoRoot 'registry\details'
+$extensionsDir = Get-RegistryExtensionsRoot -RepoRoot $repoRoot
 $items = New-Object System.Collections.Generic.List[object]
 
-New-Item -ItemType Directory -Path $detailsDir -Force | Out-Null
-Get-ChildItem -Path $detailsDir -Filter '*.json' -File | Remove-Item -Force
+Get-ChildItem -Path $extensionsDir -Recurse -Filter 'detail.json' -File | Remove-Item -Force
 
 foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
   $registryDocument = Get-PackageRegistryDocument -PackageName $entry.packageName
@@ -151,7 +150,7 @@ foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
   }
 
   $detailItem = [ordered]@{
-    '$schema' = '../../schemas/marketplace-detail.schema.json'
+     '$schema' = '../../../schemas/marketplace-detail.schema.json'
     schemaVersion = 1
     extensionId = $entry.extensionId
     packageName = $entry.packageName
@@ -162,6 +161,7 @@ foreach ($entry in @(Get-RegistryEntries -RepoRoot $repoRoot)) {
   }
 
   $detailJson = $detailItem | ConvertTo-Json -Depth 8
+  New-Item -ItemType Directory -Path (Split-Path -Parent (Get-RegistryDetailPath -RepoRoot $repoRoot -ExtensionId $entry.extensionId)) -Force | Out-Null
   Set-Content -Path (Get-RegistryDetailPath -RepoRoot $repoRoot -ExtensionId $entry.extensionId) -Value ($detailJson + [Environment]::NewLine)
 
   $items.Add($catalogItem)

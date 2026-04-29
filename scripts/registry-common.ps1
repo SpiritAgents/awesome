@@ -5,15 +5,23 @@ function Get-RegistryRoot {
   return (Resolve-Path (Join-Path $PSScriptRoot '..'))
 }
 
+function Get-RegistryExtensionsRoot {
+  param(
+    [string]$RepoRoot
+  )
+
+  return (Join-Path $RepoRoot 'registry\extensions')
+}
+
 function Get-RegistryEntryFiles {
   param(
     [string]$RepoRoot
   )
 
-  $entriesDir = Join-Path $RepoRoot 'registry\extensions'
-  $entryFiles = @(Get-ChildItem -Path $entriesDir -Filter '*.json' | Sort-Object Name)
+  $entriesDir = Get-RegistryExtensionsRoot -RepoRoot $RepoRoot
+  $entryFiles = @(Get-ChildItem -Path $entriesDir -Recurse -Filter 'entry.json' | Sort-Object FullName)
   if ($entryFiles.Count -eq 0) {
-    throw 'No registry entry files found under registry/extensions/.'
+    throw 'No registry entry files found under registry/extensions/**/entry.json.'
   }
 
   return $entryFiles
@@ -124,18 +132,18 @@ function Get-RegistryEntries {
 
   foreach ($entryFile in (Get-RegistryEntryFiles -RepoRoot $RepoRoot)) {
     $entry = Get-Content -Raw -Path $entryFile.FullName | ConvertFrom-Json -AsHashtable
-    Assert-RegistryEntry -Entry $entry -FileName $entryFile.Name
+    Assert-RegistryEntry -Entry $entry -FileName $entryFile.FullName
 
     if ($seenExtensionIds.ContainsKey($entry.extensionId)) {
-      throw "Duplicate extensionId '$($entry.extensionId)' found in $($entryFile.Name) and $($seenExtensionIds[$entry.extensionId])."
+      throw "Duplicate extensionId '$($entry.extensionId)' found in $($entryFile.FullName) and $($seenExtensionIds[$entry.extensionId])."
     }
 
     if ($seenPackageNames.ContainsKey($entry.packageName)) {
-      throw "Duplicate packageName '$($entry.packageName)' found in $($entryFile.Name) and $($seenPackageNames[$entry.packageName])."
+      throw "Duplicate packageName '$($entry.packageName)' found in $($entryFile.FullName) and $($seenPackageNames[$entry.packageName])."
     }
 
-    $seenExtensionIds[$entry.extensionId] = $entryFile.Name
-    $seenPackageNames[$entry.packageName] = $entryFile.Name
+    $seenExtensionIds[$entry.extensionId] = $entryFile.FullName
+    $seenPackageNames[$entry.packageName] = $entryFile.FullName
     $entries.Add($entry)
   }
 
@@ -239,12 +247,21 @@ function New-IconUrl {
   return "https://cdn.jsdelivr.net/npm/$PackageName@$Version/$normalizedPath"
 }
 
+function Get-RegistryEntryPath {
+  param(
+    [string]$RepoRoot,
+    [string]$ExtensionId
+  )
+
+  return (Join-Path $RepoRoot (Join-Path 'registry\extensions' (Join-Path $ExtensionId 'entry.json')))
+}
+
 function Get-RegistryDetailRelativePath {
   param(
     [string]$ExtensionId
   )
 
-  return "details/$ExtensionId.json"
+  return "extensions/$ExtensionId/detail.json"
 }
 
 function Get-RegistryDetailPath {
@@ -253,7 +270,7 @@ function Get-RegistryDetailPath {
     [string]$ExtensionId
   )
 
-  return (Join-Path $RepoRoot (Join-Path 'registry\details' ($ExtensionId + '.json')))
+  return (Join-Path $RepoRoot (Join-Path 'registry\extensions' (Join-Path $ExtensionId 'detail.json')))
 }
 
 function Get-EntryDefaultVersionItem {
@@ -267,5 +284,5 @@ function Get-EntryDefaultVersionItem {
     }
   }
 
-  throw "defaultVersion '$($Entry.defaultVersion)' was not found for extensionId '$($Entry.extensionId)'."
+  throw "defaultVersion '$($Entry.defaultVersion)' was not found for extension '$($Entry.extensionId)'."
 }

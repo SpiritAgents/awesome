@@ -10,7 +10,7 @@
       "defaultVersion": "0.1.0",
       "defaultChannel": "stable",
       "defaultReviewStatus": "unreviewed",
-      "detailPath": "details/n123999.system-message-demo.json",
+      "detailPath": "extensions/n123999.system-message-demo/detail.json",
       "displayName": "System message demo",
       "description": "This is an extension example for having the AI output the system message.",
       "author": "n123999",
