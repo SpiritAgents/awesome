@@ -5,10 +5,42 @@
   "packageName": "@n123999/spirit-agent-extension-void-theme",
   "status": "listed",
   "featured": false,
-  "defaultVersion": "0.2.0",
+  "defaultVersion": "0.3.0",
   "defaultReviewStatus": "verified",
   "readmePath": "extensions/n123999.void-theme/README.md",
   "versions": [
+    {
+      "version": "0.3.0",
+      "channel": "stable",
+      "reviewStatus": "verified",
+      "displayName": "Void Desktop CSS",
+      "description": "Desktop CSS extension: absolute black, restrained grays, and surgical white accents.",
+      "author": "n123999",
+      "homepageUrl": "https://github.com/N123999/spirit-agent-extension-void-theme#readme",
+      "repositoryUrl": "https://github.com/N123999/spirit-agent-extension-void-theme",
+      "keywords": [
+        "spirit-agent",
+        "spirit-agent-extension",
+        "desktop",
+        "desktop-ui",
+        "theme",
+        "css"
+      ],
+      "supportedHosts": [
+        "desktop"
+      ],
+      "requestedCapabilities": [
+        "desktop-ui"
+      ],
+      "publishedAt": "2026-05-01T23:15:43.8170000Z",
+      "tarballUrl": "https://registry.npmjs.org/@n123999/spirit-agent-extension-void-theme/-/spirit-agent-extension-void-theme-0.3.0.tgz",
+      "integrity": "sha512-eLHIEkV9AGfuQaOiClrkbUKmHzMRkXoYKELjGkzIbhUqEEeTILKN/7mVGdk89lwHio+qvwpbhNhNTEscFhCD+A==",
+      "shasum": "b542e5952a0a65914dc9f9fccf3f8ae117612ba0",
+      "changelog": {
+        "summary": "Refresh the README image syntax.",
+        "body": "- Replaces the HTML image in the README with Markdown syntax.\n- Bumps the package version to 0.3.0."
+      }
+    },
     {
       "version": "0.2.0",
       "channel": "stable",

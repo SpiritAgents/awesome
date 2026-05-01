@@ -5,9 +5,18 @@
   "packageName": "@n123999/spirit-agent-extension-void-theme",
   "status": "listed",
   "featured": false,
-  "defaultVersion": "0.2.0",
+  "defaultVersion": "0.3.0",
   "defaultReviewStatus": "verified",
   "versions": [
+    {
+      "version": "0.3.0",
+      "channel": "stable",
+      "reviewStatus": "verified",
+      "changelog": {
+        "summary": "Refresh the README image syntax.",
+        "body": "- Replaces the HTML image in the README with Markdown syntax.\n- Bumps the package version to 0.3.0."
+      }
+    },
     {
       "version": "0.2.0",
       "channel": "stable",
