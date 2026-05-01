@@ -6,12 +6,12 @@
   "status": "listed",
   "featured": false,
   "defaultVersion": "0.2.0",
-  "defaultReviewStatus": "unverified",
+  "defaultReviewStatus": "verified",
   "versions": [
     {
       "version": "0.2.0",
       "channel": "stable",
-      "reviewStatus": "unverified",
+      "reviewStatus": "verified",
       "changelog": {
         "summary": "Initial public release.",
         "body": "- Initial public release.\n- Adds the Void Desktop CSS theme for the Spirit Agent desktop host."

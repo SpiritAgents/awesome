@@ -6,13 +6,13 @@
   "status": "listed",
   "featured": false,
   "defaultVersion": "0.2.0",
-  "defaultReviewStatus": "unverified",
+  "defaultReviewStatus": "verified",
   "readmePath": "extensions/n123999.void-theme/README.md",
   "versions": [
     {
       "version": "0.2.0",
       "channel": "stable",
-      "reviewStatus": "unverified",
+      "reviewStatus": "verified",
       "displayName": "Void Desktop CSS",
       "description": "Desktop CSS extension: absolute black, restrained grays, and surgical white accents.",
       "author": "n123999",

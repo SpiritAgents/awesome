@@ -36,7 +36,7 @@
       "featured": false,
       "defaultVersion": "0.2.0",
       "defaultChannel": "stable",
-      "defaultReviewStatus": "unverified",
+      "defaultReviewStatus": "verified",
       "detailPath": "extensions/n123999.void-theme/detail.json",
       "displayName": "Void Desktop CSS",
       "description": "Desktop CSS extension: absolute black, restrained grays, and surgical white accents.",
