@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../schemas/marketplace-entry.schema.json",
+  "schemaVersion": 1,
+  "extensionId": "n123999.void-theme",
+  "packageName": "@n123999/spirit-agent-extension-void-theme",
+  "status": "listed",
+  "featured": false,
+  "defaultVersion": "0.2.0",
+  "defaultReviewStatus": "unverified",
+  "versions": [
+    {
+      "version": "0.2.0",
+      "channel": "stable",
+      "reviewStatus": "unverified",
+      "changelog": {
+        "summary": "Initial public release.",
+        "body": "- Initial public release.\n- Adds the Void Desktop CSS theme for the Spirit Agent desktop host."
+      }
+    }
+  ]
+}
