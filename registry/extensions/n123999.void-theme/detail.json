@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../schemas/marketplace-detail.schema.json",
+  "schemaVersion": 1,
+  "extensionId": "n123999.void-theme",
+  "packageName": "@n123999/spirit-agent-extension-void-theme",
+  "status": "listed",
+  "featured": false,
+  "defaultVersion": "0.2.0",
+  "defaultReviewStatus": "verified",
+  "readmePath": "extensions/n123999.void-theme/README.md",
+  "versions": [
+    {
+      "version": "0.2.0",
+      "channel": "stable",
+      "reviewStatus": "verified",
+      "displayName": "Void Desktop CSS",
+      "description": "Desktop CSS extension: absolute black, restrained grays, and surgical white accents.",
+      "author": "n123999",
+      "homepageUrl": "https://github.com/N123999/spirit-agent-extension-void-theme#readme",
+      "repositoryUrl": "https://github.com/N123999/spirit-agent-extension-void-theme",
+      "keywords": [
+        "spirit-agent",
+        "spirit-agent-extension",
+        "desktop",
+        "desktop-ui",
+        "theme",
+        "css"
+      ],
+      "supportedHosts": [
+        "desktop"
+      ],
+      "requestedCapabilities": [
+        "desktop-ui"
+      ],
+      "publishedAt": "2026-05-01T22:46:13.9560000Z",
+      "tarballUrl": "https://registry.npmjs.org/@n123999/spirit-agent-extension-void-theme/-/spirit-agent-extension-void-theme-0.2.0.tgz",
+      "integrity": "sha512-oeou9aVrWlJ+4PkkGTU2BZ9eXUFmVC3mZzmgm6n898t9aak3KYPjtBfHwEcDEaXWRTw4OplIZkKi5rWsOm3Qbg==",
+      "shasum": "23ca931e7c0bc8c02abe5a07e8c4d04b5490eaec",
+      "changelog": {
+        "summary": "Initial public release.",
+        "body": "- Initial public release.\n- Adds the Void Desktop CSS theme for the Spirit Agent desktop host."
+      }
+    }
+  ]
+}
+

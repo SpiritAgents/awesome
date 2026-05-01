@@ -28,6 +28,35 @@
       "requestedCapabilities": [
         "system-prompt"
       ]
+    },
+    {
+      "extensionId": "n123999.void-theme",
+      "packageName": "@n123999/spirit-agent-extension-void-theme",
+      "status": "listed",
+      "featured": false,
+      "defaultVersion": "0.2.0",
+      "defaultChannel": "stable",
+      "defaultReviewStatus": "verified",
+      "detailPath": "extensions/n123999.void-theme/detail.json",
+      "displayName": "Void Desktop CSS",
+      "description": "Desktop CSS extension: absolute black, restrained grays, and surgical white accents.",
+      "author": "n123999",
+      "homepageUrl": "https://github.com/N123999/spirit-agent-extension-void-theme#readme",
+      "repositoryUrl": "https://github.com/N123999/spirit-agent-extension-void-theme",
+      "keywords": [
+        "spirit-agent",
+        "spirit-agent-extension",
+        "desktop",
+        "desktop-ui",
+        "theme",
+        "css"
+      ],
+      "supportedHosts": [
+        "desktop"
+      ],
+      "requestedCapabilities": [
+        "desktop-ui"
+      ]
     }
   ]
 }
