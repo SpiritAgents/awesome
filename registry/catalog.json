@@ -34,7 +34,7 @@
       "packageName": "@n123999/spirit-agent-extension-void-theme",
       "status": "listed",
       "featured": false,
-      "defaultVersion": "0.3.0",
+      "defaultVersion": "0.3.1",
       "defaultChannel": "stable",
       "defaultReviewStatus": "verified",
       "detailPath": "extensions/n123999.void-theme/detail.json",
