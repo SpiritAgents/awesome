@@ -10,6 +10,38 @@
   "readmePath": "extensions/n123999.void-theme/README.md",
   "versions": [
     {
+      "version": "0.3.1",
+      "channel": "stable",
+      "reviewStatus": "verified",
+      "displayName": "Void Desktop CSS",
+      "description": "Desktop CSS extension: absolute black, restrained grays, and surgical white accents.",
+      "author": "n123999",
+      "homepageUrl": "https://github.com/N123999/spirit-agent-extension-void-theme#readme",
+      "repositoryUrl": "https://github.com/N123999/spirit-agent-extension-void-theme",
+      "keywords": [
+        "spirit-agent",
+        "spirit-agent-extension",
+        "desktop",
+        "desktop-ui",
+        "theme",
+        "css"
+      ],
+      "supportedHosts": [
+        "desktop"
+      ],
+      "requestedCapabilities": [
+        "desktop-ui"
+      ],
+      "publishedAt": "2026-05-08T01:56:23.9790000Z",
+      "tarballUrl": "https://registry.npmjs.org/@n123999/spirit-agent-extension-void-theme/-/spirit-agent-extension-void-theme-0.3.1.tgz",
+      "integrity": "sha512-BeO1ttOHaLy7EipwUbRHoeWVh81I8vGlASUZiqxMe8n7bhVh3qY4xNGZI+BIUd/FbixmmfUPa2Cig/jt2vvszA==",
+      "shasum": "137ed78c5e08e5a28c406d437cb351e4b4a5b471",
+      "changelog": {
+        "summary": "unify color scheme",
+        "body": "- Unifies the color scheme across the theme.\n- Bumps the package version to 0.3.1."
+      }
+    },
+    {
       "version": "0.3.0",
       "channel": "stable",
       "reviewStatus": "verified",
