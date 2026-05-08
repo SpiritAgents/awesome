@@ -9,6 +9,15 @@
   "defaultReviewStatus": "verified",
   "versions": [
     {
+      "version": "0.3.1",
+      "channel": "stable",
+      "reviewStatus": "verified",
+      "changelog": {
+        "summary": "unify color scheme",
+        "body": "- Unifies the color scheme across the theme.\n- Bumps the package version to 0.3.1."
+      }
+    },
+    {
       "version": "0.3.0",
       "channel": "stable",
       "reviewStatus": "verified",
