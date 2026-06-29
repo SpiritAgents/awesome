@@ -16,8 +16,8 @@
       "displayName": "System message demo",
       "description": "This is an extension example for having the AI output the system message.",
       "author": "n123999",
-      "homepageUrl": "https://github.com/N123999/spirit-agent-extension-system-message-demo#readme",
-      "repositoryUrl": "https://github.com/N123999/spirit-agent-extension-system-message-demo",
+      "homepageUrl": "https://github.com/SpiritAgents/extension-system-message-demo#readme",
+      "repositoryUrl": "https://github.com/SpiritAgents/extension-system-message-demo",
       "keywords": [
         "spirit-agent",
         "extension",
