@@ -60,11 +60,11 @@ If spiritExtension is missing, the registry build will fail for that package ver
 
 ### Real Example
 
-The existing example extension in this repository maps to the published npm package @n123999/spirit-agent-extension-system-message-demo.
+The existing example extension in this repository maps to the published npm package @spiritagent/extension-system-message-demo.
 
 Its published package metadata currently includes:
 
-- name: @n123999/spirit-agent-extension-system-message-demo
+- name: @spiritagent/extension-system-message-demo
 - version: 0.1.0
 - spiritExtension.schemaVersion: 1
 - spiritExtension.displayName: System message demo
@@ -169,7 +169,7 @@ The current schema requires this format:
 
 For example:
 
-- n123999.system-message-demo
+- spiritagent.system-message-demo
 - yourteam.some-extension
 
 packageName and extensionId must both be unique across the repository.

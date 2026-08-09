@@ -4,8 +4,8 @@ System Message Demo is a minimal Spirit Agent extension used to demonstrate a pa
 
 ## Package
 
-- Extension ID: n123999.system-message-demo
-- npm package: @n123999/spirit-agent-extension-system-message-demo
+- Extension ID: spiritagent.system-message-demo
+- npm package: @spiritagent/extension-system-message-demo
 - Repository: https://github.com/SpiritAgents/extension-system-message-demo
 - Default approved version: 0.1.0
 
