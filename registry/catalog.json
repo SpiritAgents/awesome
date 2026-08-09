@@ -3,14 +3,14 @@
   "schemaVersion": 1,
   "items": [
     {
-      "extensionId": "n123999.system-message-demo",
+      "extensionId": "spiritagent.system-message-demo",
       "packageName": "@spiritagent/extension-system-message-demo",
       "status": "listed",
       "featured": true,
       "defaultVersion": "0.1.0",
       "defaultChannel": "stable",
       "defaultReviewStatus": "verified",
-      "detailPath": "extensions/n123999.system-message-demo/detail.json",
+      "detailPath": "extensions/spiritagent.system-message-demo/detail.json",
       "displayName": "System message demo",
       "description": "This is an extension example for having the AI output the system message.",
       "author": "n123999",

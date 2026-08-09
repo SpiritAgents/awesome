@@ -169,7 +169,7 @@ The current schema requires this format:
 
 For example:
 
-- n123999.system-message-demo
+- spiritagent.system-message-demo
 - yourteam.some-extension
 
 packageName and extensionId must both be unique across the repository.

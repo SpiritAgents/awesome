@@ -1,13 +1,13 @@
 {
   "$schema": "../../../schemas/marketplace-detail.schema.json",
   "schemaVersion": 1,
-  "extensionId": "n123999.system-message-demo",
+  "extensionId": "spiritagent.system-message-demo",
   "packageName": "@spiritagent/extension-system-message-demo",
   "status": "listed",
   "featured": true,
   "defaultVersion": "0.1.0",
   "defaultReviewStatus": "verified",
-  "readmePath": "extensions/n123999.system-message-demo/README.md",
+  "readmePath": "extensions/spiritagent.system-message-demo/README.md",
   "versions": [
     {
       "version": "0.1.0",
