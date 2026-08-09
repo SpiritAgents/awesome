@@ -2,7 +2,7 @@
   "$schema": "../../../schemas/marketplace-detail.schema.json",
   "schemaVersion": 1,
   "extensionId": "n123999.system-message-demo",
-  "packageName": "@n123999/spirit-agent-extension-system-message-demo",
+  "packageName": "@spiritagent/extension-system-message-demo",
   "status": "listed",
   "featured": true,
   "defaultVersion": "0.1.0",
@@ -30,10 +30,10 @@
       "requestedCapabilities": [
         "system-prompt"
       ],
-      "publishedAt": "2026-04-29T12:13:49.0980000Z",
-      "tarballUrl": "https://registry.npmjs.org/@n123999/spirit-agent-extension-system-message-demo/-/spirit-agent-extension-system-message-demo-0.1.0.tgz",
-      "integrity": "sha512-e4Pr7UV/r5dudLqBWWo89D+i1gbK7pGGqzlkqZ81LtUcCyGpQQsBMyxVewKr+je7iZUkB7EptODF6zbrQQYk1A==",
-      "shasum": "27ebd54d8f18db797f50b603eec7381a3d60e1e4",
+      "publishedAt": "2026-08-09T12:52:13.717Z",
+      "tarballUrl": "https://registry.npmjs.org/@spiritagent/extension-system-message-demo/-/extension-system-message-demo-0.1.0.tgz",
+      "integrity": "sha512-rCFCFXiAhFpPeZiD/0/V1J+Dp1ro9ZKgw9XIIVDoO+x/6QH5UNIIBhbGZkbBZfbIxDMiVhHqmJ39SUSuKmy3sg==",
+      "shasum": "776afeb17974134e30b829b9489a67c23dadf137",
       "changelog": {
         "summary": "Initial public release.",
         "body": "- Initial public release.\n- Adds a minimal system-message demo extension."

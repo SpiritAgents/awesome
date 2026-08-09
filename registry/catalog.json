@@ -4,7 +4,7 @@
   "items": [
     {
       "extensionId": "n123999.system-message-demo",
-      "packageName": "@n123999/spirit-agent-extension-system-message-demo",
+      "packageName": "@spiritagent/extension-system-message-demo",
       "status": "listed",
       "featured": true,
       "defaultVersion": "0.1.0",
