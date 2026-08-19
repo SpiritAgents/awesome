@@ -4,13 +4,13 @@ set -euo pipefail
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/registry-common.sh"
 
 # jq program: validates registry/catalog.json and every detail.json against the
-# registry entries. Expects --argjson catalog, --argjson entries (sorted entry
-# array) and --argjson details (array of detail objects). Emits one error per
-# line; empty output means everything is in sync.
+# registry entries. Expects --slurpfile catalog / entries / details (each file
+# holds one JSON value, read via [0]). Emits one error per line; empty output
+# means everything is in sync.
 read -r -d '' VALIDATE_REGISTRY_CONTENT_JQ <<'JQ' || true
-$catalog as $c |
-$entries as $es |
-$details as $ds |
+$catalog[0] as $c |
+$entries[0] as $es |
+$details[0] as $ds |
 ($c.items // []) as $items |
 [
   (if $c.schemaVersion != 1 then "registry/catalog.json has an unsupported schemaVersion." else empty end),
@@ -87,8 +87,15 @@ root=$(registry_root)
 extensions_root="$root/registry/extensions"
 catalog_path="$root/registry/catalog.json"
 
-entries=$(load_registry_entries "$root")
-entry_count=$(jq 'length' <<< "$entries")
+# Registries with many extensions exceed the per-argument size limit on Linux
+# (128 KiB MAX_ARG_STRLEN), so pass the aggregated JSON via temp files instead
+# of --argjson.
+tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/registry-validate.XXXXXX")
+trap 'rm -rf "$tmp_dir"' EXIT
+
+entries_file="$tmp_dir/entries.json"
+load_registry_entries "$root" > "$entries_file"
+entry_count=$(jq 'length' "$entries_file")
 
 if [ ! -f "$catalog_path" ]; then
   echo 'registry/catalog.json is missing. Run ./scripts/build-catalog.sh to regenerate it.' >&2
@@ -110,19 +117,18 @@ while IFS= read -r id; do
     echo "Missing detail artifact for extensionId '$id'." >&2
     exit 1
   fi
-done < <(jq -r '.[].extensionId' <<< "$entries")
+done < <(jq -r '.[].extensionId' "$entries_file")
 
-details=$(
-  while IFS= read -r id; do
-    cat "$extensions_root/$id/detail.json"
-    echo
-  done < <(jq -r '.[].extensionId' <<< "$entries") | jq -s -c '.'
-)
+details_file="$tmp_dir/details.json"
+while IFS= read -r id; do
+  cat "$extensions_root/$id/detail.json"
+  echo
+done < <(jq -r '.[].extensionId' "$entries_file") | jq -s -c '.' > "$details_file"
 
 errors=$(jq -n -r \
-  --argjson catalog "$(cat "$catalog_path")" \
-  --argjson entries "$entries" \
-  --argjson details "$details" \
+  --slurpfile catalog "$catalog_path" \
+  --slurpfile entries "$entries_file" \
+  --slurpfile details "$details_file" \
   "$VALIDATE_REGISTRY_CONTENT_JQ")
 
 if [ -n "$errors" ]; then
