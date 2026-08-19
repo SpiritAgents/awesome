@@ -191,8 +191,8 @@ This README is intended for marketplace detail pages. Keep it focused on:
 
 After adding or changing an entry, regenerate the derived files locally:
 
-```powershell
-./scripts/build-registry.ps1
+```bash
+./scripts/build-registry.sh
 ```
 
 This script:
