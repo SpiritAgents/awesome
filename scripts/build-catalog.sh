@@ -121,9 +121,11 @@ root=$(registry_root)
 extensions_root="$root/registry/extensions"
 catalog_path="$root/registry/catalog.json"
 
-find "$extensions_root" -type f -name detail.json -delete
-
 entries=$(load_registry_entries "$root")
+
+# Delete stale detail artifacts only after all entries validated, so a failed
+# build never leaves the tree with missing details and a stale catalog.
+find "$extensions_root" -type f -name detail.json -delete
 
 catalog_items='[]'
 while IFS= read -r entry; do
