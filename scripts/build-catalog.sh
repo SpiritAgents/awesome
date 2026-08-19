@@ -4,8 +4,9 @@ set -euo pipefail
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/registry-common.sh"
 
 # jq program: builds the detail versions array for one entry. Input is the
-# entry object; expects --argjson doc (npm registry document) and
-# --arg pkg (package name). Aborts with error(...) on missing metadata.
+# entry object; expects --slurpfile doc (file containing the npm registry
+# document, read as $doc[0]) and --arg pkg (package name). Aborts with
+# error(...) on missing metadata.
 read -r -d '' BUILD_DETAIL_VERSIONS_JQ <<'JQ' || true
 def repo_url($r):
   if $r == null then null
@@ -24,8 +25,8 @@ def icon_url($pkg; $version; $icon):
   end;
 
 . as $e |
-($doc.versions // {}) as $vs |
-($doc.time // {}) as $time |
+($doc[0].versions // {}) as $vs |
+($doc[0].time // {}) as $time |
 [
   $e.versions[] | . as $ev |
   ($ev.version | tostring) as $version |
@@ -121,6 +122,11 @@ root=$(registry_root)
 extensions_root="$root/registry/extensions"
 catalog_path="$root/registry/catalog.json"
 
+# Large npm packuments exceed the per-argument size limit on Linux (128 KiB
+# MAX_ARG_STRLEN), so pass them to jq via temp files instead of --argjson.
+tmp_dir=$(mktemp -d "${TMPDIR:-/tmp}/registry-build.XXXXXX")
+trap 'rm -rf "$tmp_dir"' EXIT
+
 entries=$(load_registry_entries "$root")
 
 # Delete stale detail artifacts only after all entries validated, so a failed
@@ -138,12 +144,13 @@ while IFS= read -r entry; do
     exit 1
   fi
 
-  if ! npm_doc=$(fetch_package_document "$package_name"); then
+  doc_file="$tmp_dir/npm-doc.json"
+  if ! fetch_package_document "$package_name" > "$doc_file"; then
     echo "Failed to fetch npm metadata for $package_name." >&2
     exit 1
   fi
 
-  detail_versions=$(jq -c --argjson doc "$npm_doc" --arg pkg "$package_name" "$BUILD_DETAIL_VERSIONS_JQ" <<< "$entry")
+  detail_versions=$(jq -c --slurpfile doc "$doc_file" --arg pkg "$package_name" "$BUILD_DETAIL_VERSIONS_JQ" <<< "$entry")
 
   detail_dir="$extensions_root/$id"
   mkdir -p "$detail_dir"
