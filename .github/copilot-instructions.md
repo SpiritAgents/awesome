@@ -23,9 +23,9 @@
 - registry/catalog.json is the lightweight generated catalog consumed by marketplace list UIs.
 - registry/extensions/<extension-id>/detail.json stores the hydrated detail artifact for that extension.
 - schemas/*.schema.json defines the registry file shapes.
-- scripts/validate-registry.ps1 validates registry/extensions/<extension-id>/entry.json and checks shared fields against registry/catalog.json and registry/extensions/<extension-id>/detail.json without npm network access.
-- scripts/build-catalog.ps1 hydrates registry/catalog.json and registry/extensions/<extension-id>/detail.json from the explicit versions listed in registry/extensions/<extension-id>/entry.json.
-- scripts/build-registry.ps1 validates registry state and rebuilds generated registry artifacts locally.
+- scripts/validate-registry.sh validates registry/extensions/<extension-id>/entry.json and checks shared fields against registry/catalog.json and registry/extensions/<extension-id>/detail.json without npm network access.
+- scripts/build-catalog.sh hydrates registry/catalog.json and registry/extensions/<extension-id>/detail.json from the explicit versions listed in registry/extensions/<extension-id>/entry.json.
+- scripts/build-registry.sh validates registry state and rebuilds generated registry artifacts locally.
 
 ## Editing Guidance
 
