@@ -125,11 +125,14 @@ while IFS= read -r id; do
   echo
 done < <(jq -r '.[].extensionId' "$entries_file") | jq -s -c '.' > "$details_file"
 
-errors=$(jq -n -r \
+if ! errors=$(jq -n -r \
   --slurpfile catalog "$catalog_path" \
   --slurpfile entries "$entries_file" \
   --slurpfile details "$details_file" \
-  "$VALIDATE_REGISTRY_CONTENT_JQ")
+  "$VALIDATE_REGISTRY_CONTENT_JQ"); then
+  echo "Failed to parse $catalog_path or a detail artifact; see the jq error above for the file." >&2
+  exit 1
+fi
 
 if [ -n "$errors" ]; then
   printf '%s\n' "$errors" >&2
